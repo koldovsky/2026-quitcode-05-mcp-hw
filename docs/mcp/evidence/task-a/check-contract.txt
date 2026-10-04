@@ -1,0 +1,19 @@
+LeadDesk MCP contract check · server mcp/leaddesk-server · Inspector 2.8.0 · 2026-10-04T11:06:05.935Z
+PASS C1 tools/list: exactly leaddesk_find_leads and leaddesk_set_lead_status, readOnlyHint true/false
+PASS C2 tools/list: every parameter has a description; enums, id pattern and bounds come from the app
+PASS C3 tool descriptions say what the tool does and whether it changes data
+PASS C4 resource leaddesk://reference/statuses, text/markdown, explains all five statuses
+PASS C5 find any/50: 20 leads, only id company status source budget createdAt, no name/email/message
+PASS C6 find qualified → lead_0001, lead_0013, lead_0015 (answer key, prompt 1)
+PASS C7 find new/5 newest first → 0002, 0005, 0004, 0018, 0012 (prompt 2)
+PASS C8 find won: budgets sum to 9000, one lead without budget (prompt 3)
+PASS C9 set lead_0002 → contacted: new status + audit { action, leadId, at } in structuredContent
+PASS C10 unknown lead lead_9999 → isError with a hint to leaddesk_find_leads
+PASS C11 same status (lead_0001 is qualified → qualified) → isError, not a silent success
+PASS C12 closed deal (lead_0006 won → lost) → isError: the agent does not reopen won/lost
+PASS C13 invalid input is rejected: id nope, status hot, reason 2 and 501 chars, limit 0 / 51 / 1.5
+PASS C14 fixture is an unchanged copy of materials/leads.json, also after the status changes above
+PASS C15 stdout is protocol only: nothing on stdout without a client; no console.log in src/
+PASS C16 package.json: exact versions of @modelcontextprotocol/server and zod, no sdk; src/ has only .mjs
+PASS C17 back to new (lead_0003 contacted → new) → isError: only the app sets new
+RESULT: 17/17 PASS

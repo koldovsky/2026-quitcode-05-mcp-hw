@@ -1,0 +1,4 @@
+vercel tools in init (run without deny): 244
+walkthrough deny (11 names): 10 exist, close 10 → 234 left
+41 verb globs close 107; 5 exact names close 5
+whole deny list closes 113 → 131 left

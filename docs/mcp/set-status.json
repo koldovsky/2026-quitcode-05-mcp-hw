@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "lead_0002 (Rynok Books): new → contacted. Запис аудиту: lead.status_changed о 2026-10-04T11:06:00.439Z."
+    }
+  ],
+  "structuredContent": {
+    "lead": {
+      "id": "lead_0002",
+      "company": "Rynok Books",
+      "status": "contacted",
+      "source": "webinar",
+      "budget": 500,
+      "createdAt": "2026-09-13T00:52:02.043Z"
+    },
+    "audit": {
+      "action": "lead.status_changed",
+      "leadId": "lead_0002",
+      "at": "2026-10-04T11:06:00.439Z",
+      "from": "new",
+      "to": "contacted",
+      "reason": "перевірка в Inspector",
+      "actor": "mcp:leaddesk"
+    }
+  }
+}

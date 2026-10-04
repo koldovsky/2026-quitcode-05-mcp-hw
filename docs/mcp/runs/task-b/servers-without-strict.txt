@@ -1,0 +1,12 @@
+# claude mcp list in ~/leaddesk-ab-b (empty folder + leaddesk), 2026-10-04, Claude Code 2.1.289
+# counted by kind and state; names and URLs of non-course servers are not recorded
+  3 claude.ai connector · connected
+  6 claude.ai connector · needs auth
+  1 leaddesk (added for run B, local scope) · connected
+  1 plugin server · failed
+  6 plugin server · needs auth
+  2 plugin server · not configured
+  1 project .mcp.json from a parent folder (~), pending approval · pending approval
+  2 user-scope server · connected
+ 22 total · 21 besides leaddesk
+# claude.ai Gmail: connected

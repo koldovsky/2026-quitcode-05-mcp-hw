@@ -1,0 +1,62 @@
+LeadDesk MCP over HTTP · 2026-09-28T11:46:51Z · node v22.21.0 · mcp/leaddesk-server/src/http.mjs
+listening: node 127.0.0.1:3333 (pid is ours: 82734)
+1. The four responses of the walkthrough (verbatim commands, body from a temp file)
+{"result":{"tools":[{"name":"leaddesk_find_leads","title":"Знайти ліди LeadDesk","description":"…","inputSchema":{"type":"object","$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"status":{"type":"string","enum":["new","contacted","qualified","won","lost","any"],"description":"…"},"limit":{"default":10,"description":"…","type":"integer","minimum":1,"maximum":5
+HTTP 200
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Invalid Host: evil.example"},"id":null}
+HTTP 403
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Invalid Origin: evil.example"},"id":null}
+HTTP 403
+{"jsonrpc":"2.0","error":{"code":-32020,"message":"Bad Request: the request headers and body disagree: the body envelope names protocol version 2026-07-28 but the required MCP-Protocol-Version header is absent","data":{"mismatch":{"header":"(missing)","body":"the body envelope names protocol version 2026-07-28 but the required MCP-Protocol-Version header is absent"}}},"id":1}
+HTTP 400
+  ok   no forged headers: HTTP 200
+  ok   tools in the 200 body: leaddesk_find_leads,leaddesk_set_lead_status
+  ok   Host: evil.example: HTTP 403
+  ok   Origin: https://evil.example: HTTP 403
+  ok   no MCP-Protocol-Version: HTTP 400
+  ok   error code without MCP-Protocol-Version: -32020
+2. Attacks on the guards
+  ok   Host localhost:3333: 200
+  ok   Host 127.0.0.1:3333: 200
+  ok   Host [::1]:3333: 200
+  ok   Host LOCALHOST:3333: 200
+  ok   Host localhost.evil.example: 403
+  ok   Host 127.0.0.1.nip.io: 403
+  ok   Host evil.example:3333: 403
+  ok   Host localhost@evil.example: 403
+  ok   no Host header (rejected by node:http, not by the guard): 400
+  ok   empty Host header: 403
+  ok   Origin null: 403
+  ok   Origin http://localhost.evil.example: 403
+  ok   Origin https://127.0.0.1.nip.io: 403
+  ok   Origin not a url: 403
+  ok   Origin http://localhost:3000 (any localhost port passes): 200
+  ok   Origin http://127.0.0.1:5173 (any localhost port passes): 200
+  ok   connect via the LAN address (listens on 127.0.0.1 only): 000
+3. State across requests (module-level store)
+  ok   new leads before: 6
+  ok   set lead_0002 → contacted: lead.status_changed
+  ok   new leads in the next request: 5
+4. Ablation in temp copies (each breaks one protection)
+  A1 guards passed as toNodeHandler options instead of being called:
+  ok   A1 Host: evil.example (option silently ignored): 200
+  ok   A1 Origin: https://evil.example: 200
+  A2 Origin guard removed, Host guard kept:
+  ok   A2 Host: evil.example (still guarded): 403
+  ok   A2 Origin: https://evil.example (now passes): 200
+  A3 lead store created inside the factory (once per HTTP request):
+  ok   A3 set lead_0002 → contacted: lead.status_changed
+  ok   A3 new leads in the next request (change lost): 6
+server log (stderr), personal data must be absent:
+  leaddesk: 20 leads loaded from the fixture (read-only file, changes stay in memory)
+  leaddesk: MCP over HTTP on http://127.0.0.1:3333/mcp
+  leaddesk: lead_0002 new -> contacted
+  leaddesk: 20 leads loaded from the fixture (read-only file, changes stay in memory)
+  leaddesk: MCP over HTTP on http://127.0.0.1:3333/mcp
+  leaddesk: 20 leads loaded from the fixture (read-only file, changes stay in memory)
+  leaddesk: MCP over HTTP on http://127.0.0.1:3333/mcp
+  leaddesk: 20 leads loaded from the fixture (read-only file, changes stay in memory)
+  leaddesk: MCP over HTTP on http://127.0.0.1:3333/mcp
+  leaddesk: lead_0002 new -> contacted
+  ok   emails in server log: 0
+RESULT: all expectations met

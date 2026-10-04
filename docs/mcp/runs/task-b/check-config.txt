@@ -1,0 +1,15 @@
+PASS .mcp.json has supabase, vercel and playwright
+PASS every entry with url has type
+PASS supabase: project_ref and features=database,development,docs without account, functions, branching
+PASS vercel: https://mcp.vercel.com
+PASS playwright: exact @playwright/mcp@0.0.82, --isolated, --no-webmcp, no extension/cdp/user-data-dir/port/host
+PASS no @latest in .mcp.json
+PASS no plaintext secret in .mcp.json
+PASS deny: all 11 Vercel tools of the walkthrough by exact name
+PASS deny: playwright browser_run_code_unsafe, webmcp_*, browser_file_upload, browser_drop
+PASS no server-wide deny (mcp__*, mcp__<server>__*)
+PASS allow: exact names only, no * in any mcp__ rule
+PASS allow: no execute_sql, no apply_migration
+PASS every mcp__<server>__ prefix is a key of .mcp.json (supabase, vercel, playwright)
+PASS deny: 41 state-changing Vercel verb prefixes (docs/mcp/connections.md)
+RESULT: all PASS

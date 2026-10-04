@@ -1,0 +1,6 @@
+# 2026-10-04T10:17Z · zsh on macOS
+$ command -v vercel; echo "exit=$?"
+exit=1
+$ vercel whoami
+(eval):1: command not found: vercel
+exit=127

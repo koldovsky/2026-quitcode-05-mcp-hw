@@ -1,0 +1,6 @@
+PASS supabase/migrations/0001_leaddesk.sql: create table … leads
+PASS supabase/migrations/0001_leaddesk.sql: status limited to exactly new, contacted, qualified, won, lost (found: new, contacted, qualified, won, lost)
+PASS supabase/seed/leads.sql: 20 distinct ids lead_0001–lead_0020 (found 20)
+PASS supabase/seed/leads.sql: every field of every lead equals materials/leads.json
+PASS no secrets or connection strings in the SQL
+RESULT: all PASS

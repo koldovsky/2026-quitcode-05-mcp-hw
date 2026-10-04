@@ -1,0 +1,9 @@
+# --allowed-origins probe · 2026-09-28T12:01:24Z · @playwright/mcp@0.0.82 from .mcp.json
+== direct
+== redirect
+stub :3000 got: GET /
+listener got: GET /via-redirect?probe=1
+== direct: result of browser_navigate (first 300 chars)
+[is_error] ### Error Error: browserBackend.callTool: net::ERR_BLOCKED_BY_CLIENT at http://127.0.0.1:8765/direct Call log: - navigating to "http://127.0.0.1:8765/direct", waiting until "domcontentloaded"
+== redirect: result of browser_navigate (first 300 chars)
+### Ran Playwright code ```js await page.goto('http://localhost:3000'); ``` ### Open tabs - 0: (current) [](http://127.0.0.1:8765/via-redirect?probe=1) - 1: [](about:blank) ### Page - Page URL: http://127.0.0.1:8765/via-redirect?probe=1 ### Snapshot - [Snapshot](.playwright-mcp/page-2026-09-28T12-01

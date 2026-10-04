@@ -1,0 +1,3 @@
+# Same configuration as the A and B sessions, headless, no tool called (claude -p --model haiku, prompt «Нічого не викликай. Відповідь: ОК.»), 2026-10-04, Claude Code 2.1.289
+a: cwd ~/leaddesk-ab-a · mcp_servers supabase (connected) · MCP tools 5: mcp__supabase__execute_sql mcp__supabase__list_extensions mcp__supabase__list_migrations mcp__supabase__list_tables mcp__supabase__search_docs · Bash offered: false · WebFetch offered: false
+b: cwd ~/leaddesk-ab-b · mcp_servers leaddesk (connected) · MCP tools 2: mcp__leaddesk__leaddesk_find_leads mcp__leaddesk__leaddesk_set_lead_status · Bash offered: false · WebFetch offered: false

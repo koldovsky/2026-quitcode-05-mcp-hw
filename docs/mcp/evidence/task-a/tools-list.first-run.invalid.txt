@@ -1,0 +1,86 @@
+{
+  "tools": [
+    {
+      "name": "leaddesk_find_leads",
+      "title": "Знайти ліди LeadDesk",
+      "description": "Повертає ліди LeadDesk за статусом, найновіші першими: id, компанія, статус, джерело, бюджет і дата заявки. Імені, email і тексту заявки не повертає. Також повертає, скільки лідів усього має цей статус. Тільки читає, нічого не змінює. Що означає кожен статус — у ресурсі leaddesk://reference/statuses.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "new",
+              "contacted",
+              "qualified",
+              "won",
+              "lost",
+              "any"
+            ],
+            "description": "Який статус шукати: new, contacted, qualified, won або lost; any — усі статуси"
+          },
+          "limit": {
+            "default": 10,
+            "description": "Скільки лідів повернути, від 1 до 50; за замовчуванням 10. Поле total у відповіді каже, скільки їх усього",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "leaddesk_set_lead_status",
+      "title": "Змінити статус ліда LeadDesk",
+      "description": "ЗМІНЮЄ ДАНІ: переводить один лід LeadDesk у новий статус і пише запис в аудит (lead.status_changed). Перед викликом покажи людині, що зміниться («lead_0002: new → contacted, причина …»), і дочекайся її підтвердження. Той самий статус і невідомий лід — помилка. Закриті ліди (won, lost) не перевідкриває: це робить людина в дашборді. Коли переводити в який статус — у ресурсі leaddesk://reference/statuses.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "leadId": {
+            "type": "string",
+            "pattern": "^lead_\\d{4}$",
+            "description": "Ідентифікатор ліда у форматі lead_0002: lead_ і чотири цифри. Невідомий — знайди через leaddesk_find_leads"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "new",
+              "contacted",
+              "qualified",
+              "won",
+              "lost"
+            ],
+            "description": "Новий статус: new, contacted, qualified, won або lost. Має відрізнятися від поточного"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500,
+            "description": "Чому змінюємо статус, 3–500 символів, наприклад «зателефонували, клієнт чекає кошторис». Потрапляє в аудит"
+          }
+        },
+        "required": [
+          "leadId",
+          "status",
+          "reason"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    }
+  ]
+}
+leaddesk: 20 leads loaded from the fixture (read-only file, changes stay in memory)

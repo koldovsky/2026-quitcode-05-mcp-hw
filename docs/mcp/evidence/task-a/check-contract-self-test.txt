@@ -1,0 +1,11 @@
+OK   M1 find returns email: expected C5 to FAIL; failed = C5
+OK   M2 same status is accepted silently: expected C11 to FAIL; failed = C11
+OK   M3 closed deals can be reopened: expected C12 to FAIL; failed = C12
+OK   M4 set_lead_status claims to be read-only: expected C1 to FAIL; failed = C1
+OK   M5 oldest first: expected C7 to FAIL; failed = C6, C7
+OK   M6 console.log on start: expected C15 to FAIL; failed = C15
+OK   M7 writes the change back into the fixture: expected C14 to FAIL; failed = C14
+OK   M8 invented status hot: expected C2 to FAIL; failed = C2, C13
+OK   M9 no audit entry in the result: expected C9 to FAIL; failed = C9
+OK   M10 an open lead can be sent back to new: expected C17 to FAIL; failed = C17
+self-test: every mutant was caught by its own check

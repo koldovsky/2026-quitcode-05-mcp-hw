@@ -1,0 +1,16 @@
+# Do allow rules in a project .claude/settings.json apply in headless claude -p? 2.1.282 (Claude Code), 2026-09-28
+# One fresh headless session per row, model sonnet, --setting-sources project, --permission-mode default.
+# Server: this repo's leaddesk (stdio). Rule under test: allow mcp__leaddesk__leaddesk_find_leads (row d: mcp__leaddesk).
+# Folders: a fresh folder under ~ (not trusted) and one under the trusted course folder.
+# Server names other than leaddesk are counted, not named (they belong to the machine's user config).
+untrusted folder · --mcp-config · settings allow exact MCP tool                | other MCP servers in session: 0 | denied: mcp__leaddesk__leaddesk_find_leads → NOT applied
+untrusted folder · settings allow Bash(echo probe-allow)                       | other MCP servers in session: 0 | denied: none → applied
+trusted parent · --mcp-config · settings allow exact MCP tool                  | other MCP servers in session: 0 | denied: mcp__leaddesk__leaddesk_find_leads → NOT applied
+trusted parent · settings allow Bash(echo probe-allow)                         | other MCP servers in session: 0 | denied: none → applied
+a) untrusted · --mcp-config · CLI --allowedTools exact MCP tool                | other MCP servers in session: 0 | denied: none → applied
+b) untrusted · project .mcp.json (no --strict-mcp-config) · settings allow     | other MCP servers in session: 8 | denied: mcp__leaddesk__leaddesk_find_leads → NOT applied
+c) = b + enableAllProjectMcpServers: true                                      | other MCP servers in session: 8 | denied: mcp__leaddesk__leaddesk_find_leads → NOT applied
+d) untrusted · --mcp-config · settings allow mcp__leaddesk (server level)      | other MCP servers in session: 0 | denied: mcp__leaddesk__leaddesk_find_leads → NOT applied
+# Conclusion (measured, cause not established): the project allow rule works for Bash, not for MCP tools; the
+# same MCP rule works from the CLI. Without --strict-mcp-config (rows b, c) the session also got every
+# user-scope server and claude.ai connector of this machine.

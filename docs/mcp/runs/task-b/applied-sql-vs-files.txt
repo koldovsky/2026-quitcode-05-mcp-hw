@@ -1,0 +1,3 @@
+applied migration == supabase/migrations/0001_leaddesk.sql (comments and whitespace ignored): true
+executed insert == supabase/seed/leads.sql (comments and whitespace ignored): true
+# compared: tool_use inputs in supabase-build-2/transcript.jsonl vs the committed files
