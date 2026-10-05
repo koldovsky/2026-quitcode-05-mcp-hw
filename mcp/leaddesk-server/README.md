@@ -37,6 +37,16 @@ npx -y @modelcontextprotocol/inspector@2.8.0 --cli node mcp/leaddesk-server/src/
 
 Збережені результати — у `docs/mcp/*.json`.
 
+## HTTP-режим (Task E1)
+
+```bash
+node src/http.mjs          # http://127.0.0.1:3333/mcp — лише localhost
+```
+
+Та сама фабрика (`src/leaddesk.mjs`), транспорт Streamable HTTP. Гварди Host і Origin викликаються в
+обробнику запиту: підроблений `Host` чи `Origin` → 403. Автентифікації немає — не виставляйте сервер
+за межі `127.0.0.1`. Перевірки `curl` — `docs/mcp/verification.md`, розділ «Task E».
+
 ## Підключення до Claude Code
 
 Абсолютний шлях, бо Claude Code запускає сервер не з вашої теки:

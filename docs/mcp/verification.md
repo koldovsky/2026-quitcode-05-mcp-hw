@@ -89,5 +89,32 @@
 
 ## Task E (бонус)
 
-- Варіант: <E1 HTTP-сервер / E2 отруєний опис / E3 Cursor>
-- <команди, виводи, спостереження — див. walkthrough, Task E>
+- Варіант: **E1 — HTTP-сервер із захистом Host/Origin.**
+- Код: `mcp/leaddesk-server/src/http.mjs` — та сама фабрика, що в stdio. Інструменти й ресурс винесено
+  в `src/leaddesk.mjs` (`export const factory`); `src/server.mjs` лишився на `serveStdio(factory)`.
+  Після перенесення stdio-сервер перевірено тим самим сирим JSON-RPC, що в Task A: 8 відповідей без
+  змін. У `package.json` додано `"@modelcontextprotocol/node": "2.1.0"` (точна версія,
+  `npm install --save-exact`); `@modelcontextprotocol/sdk` у lock-файлі немає.
+- `createMcpHandler(factory)` → `toNodeHandler(…)`; сервер слухає лише `127.0.0.1:3333`. Гварди
+  `localhostHostValidation()` і `localhostOriginValidation()` викликаються в самому обробнику
+  `createServer(async (req, res) => { if (!checkHost(req, res)) return; if (!checkOrigin(req, res)) return; await mcp(req, res); })`,
+  а не опцією `toNodeHandler`, яку мовчки проігноровано б.
+- Запуск: `node mcp/leaddesk-server/src/http.mjs` → stderr `[leaddesk] http://127.0.0.1:3333/mcp`.
+  Тіло — `body.json` з walkthrough (`tools/list`, `_meta` з `io.modelcontextprotocol/protocolVersion:
+  "2026-07-28"` і `io.modelcontextprotocol/clientCapabilities`); `body.json` у `.gitignore` і після
+  перевірки видалено. Заголовки `H=(-H "Content-Type: application/json" -H "Accept: application/json,
+  text/event-stream" -H "MCP-Protocol-Version: 2026-07-28" -H "Mcp-Method: tools/list")`.
+- Чотири відповіді `curl` (macOS, zsh):
+
+  | # | Запит | HTTP | Тіло відповіді |
+  |---|---|---|---|
+  | 1 | `"${H[@]}"` | **200** | `{"result":{"tools":[…]}}` — `leaddesk_find_leads` (`readOnlyHint: true`), `leaddesk_set_lead_status` (`readOnlyHint: false`) |
+  | 2 | `"${H[@]}" -H "Host: evil.example"` | **403** | `{"jsonrpc":"2.0","error":{"code":-32000,"message":"Invalid Host: evil.example"},"id":null}` |
+  | 3 | `"${H[@]}" -H "Origin: https://evil.example"` | **403** | `{"jsonrpc":"2.0","error":{"code":-32000,"message":"Invalid Origin: evil.example"},"id":null}` |
+  | 4 | без `MCP-Protocol-Version` | **400** | `{"jsonrpc":"2.0","error":{"code":-32020,"message":"Bad Request: the request headers and body disagree: the body envelope names protocol version 2026-07-28 but the required MCP-Protocol-Version header is absent",…},"id":1}` |
+
+- Висновок: 403 на підроблені `Host` і `Origin` — це захист від DNS rebinding і від запитів зі
+  сторонніх сторінок у браузері до локального сервера; він працює лише тому, що гварди викликано
+  явно. 400 на відсутній заголовок версії — перевірка самого SDK. Сервер без автентифікації: на
+  `127.0.0.1` це прийнятно, за межі машини його так виставляти не можна. Стан (`leads`, `audit`) — на
+  рівні модуля, тож у HTTP-режимі спільний для всіх клієнтів процесу.
