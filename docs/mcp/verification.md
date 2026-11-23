@@ -7,7 +7,7 @@
 
 - Команди, якими зроблено чотири файли в `docs/mcp/`: `npx -y @modelcontextprotocol/inspector@2.8.0 --cli node mcp/leaddesk-server/src/server.mjs` з методами `tools/list`, `tools/call` (`leaddesk_set_lead_status`, двічі) і `resources/read`, як у walkthrough.
 - `tools-list.json`: два інструменти; `leaddesk_find_leads` має `readOnlyHint: true`, `leaddesk_set_lead_status` — `readOnlyHint: false`. Кожен параметр має `.describe()`.
-- `bad-input.json`: `leadId=nope`, `reason=ok`. Валідація відхилила обидва аргументи (шаблон `^lead_\d{4}$` і мінімум 3 символи в `reason`); `isError: true`, код виходу Inspector 5.
+- `bad-input.json`: `leadId=nope`, `reason=ok`. Валідація відхилила обидва аргументи (шаблон `^lead_\d{4}$` і мінімум 3 символи в `reason`); `isError: true`, код виходу Inspector 5. Текст помилки дослівно: `Input validation error: Invalid arguments for tool leaddesk_set_lead_status: leadId: Invalid string: must match pattern /^lead_\d{4}$/, reason: Too small: expected string to have >=3 characters`. Повторний прогін тієї самої команди 23.11 дав побайтово той самий файл.
 - `set-status.json`: `lead_0002` new → contacted; в `structuredContent.audit` є `action`, `leadId`, `at` (плюс `from`, `to`, `reason`).
 - Самоперевірки: `grep -c '"isError": true' docs/mcp/bad-input.json` → 1; `grep -rc 'console\.log' mcp/leaddesk-server/src` → 0; `cmp materials/leads.json mcp/leaddesk-server/fixtures/leads.json` без відмінностей.
 - Що було найважче в описах: у `set_lead_status` одразу сказати, що інструмент змінює дані й потребує підтвердження людини.
@@ -39,14 +39,27 @@
 - **Фабрика:** та сама, що в stdio-сервері. `server.mjs` тепер експортує `factory` і запускає `serveStdio` лише тоді, коли його запущено напряму (порівняння `import.meta.url` із шляхом точки входу), тож `http.mjs` імпортує фабрику, не запускаючи stdio. Інструменти й ресурс лишились у `server.mjs`. Регресія stdio: Inspector `tools/list` і `resources/read` дали файли, побайтово ідентичні `docs/mcp/tools-list.json` і `docs/mcp/resource-read.json`, і з кореня репозиторію, і з відносного шляху з іншої теки.
 - **Залежність:** у `mcp/leaddesk-server/package.json` додано `"@modelcontextprotocol/node": "2.1.0"` (точна версія; дозволений виняток для E1). Кореневі `package.json` і `package-lock.json` не змінено.
 - **Гварди:** `localhostHostValidation()` і `localhostOriginValidation()` викликаються самим кодом на початку обробника (`if (!checkHost(req, res)) return;`). Передавати їх опцією в `toNodeHandler` не можна: її мовчки ігнорують (це зі слів walkthrough; власною перевіркою я цього не підтвердив), і сервер відповідає 200 на підроблений `Host`. Слухаємо лише `127.0.0.1:3333`.
-- **Запуск і докази** (`node mcp/leaddesk-server/src/http.mjs`, потім чотири `curl` із `body.json`, який лежить поза репозиторієм і не комітиться):
+- **Запуск і докази** (`node mcp/leaddesk-server/src/http.mjs`, потім чотири `curl` із `body.json` і масивом `H` з `docs/walkthrough.md:762-763`; `body.json` лежить поза репозиторієм і не комітиться):
 
-| Запит | Відповідь |
-|---|---|
-| звичайний | `HTTP 200`, у `tools/list` обидва інструменти: `leaddesk_find_leads`, `leaddesk_set_lead_status` |
-| `-H "Host: evil.example"` | `HTTP 403`, `{"code":-32000,"message":"Invalid Host: evil.example"}` |
-| `-H "Origin: https://evil.example"` | `HTTP 403`, `{"code":-32000,"message":"Invalid Origin: evil.example"}` |
-| без заголовка `MCP-Protocol-Version` | `HTTP 400`, код `-32020`: заголовки й тіло запиту розходяться, заголовок відсутній |
+Сирий вивід (повторний прогін 23.11.2026 тими самими командами; повна копія з шапкою — `docs/mcp/evidence/e1-curl.txt`):
+
+```text
+$ curl -s -w '\nHTTP %{http_code}\n' "${H[@]}" --data-binary @body.json http://127.0.0.1:3333/mcp
+{"result":{"tools":[{"name":"leaddesk_find_leads","title":"Знайти ліди","description":"Повертає ліди LeadDesk за статусом, найновіші першими. Для кожного ліда — id, компанія, статус, джерело, бюджет і дата створення; імені, email і тексту заявки немає. Тільки читає, нічого не змінює.","inputSchema":{"type":"object","$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"status":{"default":"any","description":"Статус ліда: new, contacted, qualified, won, lost. any — без фільтра за статусом","type":"string","enum":["new","contacted","qualified","won","lost","any"]},"limit":{"default":10,"description":"Скільки лідів повернути, від 1 до 50. За замовчуванням 10","type":"integer","minimum":1,"maximum":50}}},"annotations":{"readOnlyHint":true}},{"name":"leaddesk_set_lead_status","title":"Змінити статус ліда","description":"ЗМІНЮЄ ДАНІ: переводить лід в інший статус і пише запис в аудит. Перед викликом отримай підтвердження людини («змінити статус lead_0002 на contacted»). Застосовуй після дзвінка чи листа, коли статус ліда змінився. Статус — лише з переліку; невідомий лід або той самий статус дають помилку.","inputSchema":{"type":"object","$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"leadId":{"type":"string","pattern":"^lead_\\d{4}$","description":"Ідентифікатор ліда у форматі lead_0001. Знайти його можна через leaddesk_find_leads"},"status":{"type":"string","enum":["new","contacted","qualified","won","lost"],"description":"Новий статус: new, contacted, qualified, won або lost"},"reason":{"type":"string","minLength":3,"maxLength":500,"description":"Чому змінюємо статус, від 3 до 500 символів: що сталося на дзвінку чи в листуванні"}},"required":["leadId","status","reason"]},"annotations":{"readOnlyHint":false}}],"resultType":"complete","ttlMs":0,"cacheScope":"private","_meta":{"io.modelcontextprotocol/serverInfo":{"name":"leaddesk","version":"0.1.0"}}},"jsonrpc":"2.0","id":1}
+HTTP 200
+
+$ curl -s -w '\nHTTP %{http_code}\n' "${H[@]}" -H "Host: evil.example" --data-binary @body.json http://127.0.0.1:3333/mcp
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Invalid Host: evil.example"},"id":null}
+HTTP 403
+
+$ curl -s -w '\nHTTP %{http_code}\n' "${H[@]}" -H "Origin: https://evil.example" --data-binary @body.json http://127.0.0.1:3333/mcp
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Invalid Origin: evil.example"},"id":null}
+HTTP 403
+
+$ curl -s -w '\nHTTP %{http_code}\n' -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" -H "Mcp-Method: tools/list" --data-binary @body.json http://127.0.0.1:3333/mcp
+{"jsonrpc":"2.0","error":{"code":-32020,"message":"Bad Request: the request headers and body disagree: the body envelope names protocol version 2026-07-28 but the required MCP-Protocol-Version header is absent","data":{"mismatch":{"header":"(missing)","body":"the body envelope names protocol version 2026-07-28 but the required MCP-Protocol-Version header is absent"}}},"id":1}
+HTTP 400
+```
 
 - **Чого не перевіряв:** негативний контроль (гварди опцією в `toNodeHandler` → 200 на підроблений `Host`) я не запускав; про нього написано за walkthrough.
 - Після перевірки сервер зупинено, порт 3333 вільний.
