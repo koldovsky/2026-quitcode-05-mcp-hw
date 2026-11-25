@@ -1,4 +1,7 @@
 # Прогін A: Supabase (read_only=true, features=database,docs)
+
+> Локальні шляхи в цьому транскрипті скорочено до `~/` (домашня тека), 25.11.2026; решта — дослівно.
+
 Тека `../leaddesk-ab-a` (порожня до початку), нова сесія Claude Code 2.1.296, Sonnet 5 з effort high, manual mode. У `/mcp` лише `supabase` (5 інструментів). Це другий прогін A: його виконано після ввімкнення RLS на `public.leads` (міграція `0002_leads_rls.sql`) і з копіюванням усіх запитів на схвалення. Транскрипт відтворено із файлу сесії Claude Code: запити, виклики інструментів з аргументами, результати (довгі скорочено) і відповіді агента. Запити на схвалення файл сесії не зберігає, їх дослівно подано в `docs/mcp/ab-generic-vs-domain.md`.
 
 ## Запит 1  (13:01:01 UTC)
@@ -132,7 +135,7 @@
 
 ```json
 {
- "command": "find /Users/mac1/leaddesk-ab-a -maxdepth 3 -iname \"*.md\" -o -iname \"README*\" 2>/dev/null | head -50",
+ "command": "find ~/leaddesk-ab-a -maxdepth 3 -iname \"*.md\" -o -iname \"README*\" 2>/dev/null | head -50",
  "description": "Look for README or docs describing lead statuses"
 }
 ```
