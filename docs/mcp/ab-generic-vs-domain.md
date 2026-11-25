@@ -42,7 +42,7 @@
 - A, запит 5, виклик 2: «supabase — Execute SQL Tool: (MCP) · query: update public.leads set status = 'contacted' where id = 'lead_0002' returning id, company, status; · About: Executes raw SQL in the Postgres database. Use `apply_migration` instead for DDL operations. This may…» → база відхилила запис: `ERROR: cannot execute UPDATE in a read-only transaction`
 - A, запит 6: «supabase — Execute SQL Tool: (MCP) · query: select id, company, status, message from public.leads where id = 'lead_0003'; · About: Executes raw SQL in the Postgres database. Use `apply_migration` instead for DDL operations. This may…»
 
-Знак «…» у кінці опису інструмента в усіх цитатах — це обрізання самим діалогом Claude Code (повний опис розгортається `ctrl+o`), а не скорочення в цьому звіті.
+Знак «…» у кінці опису інструмента в усіх цитатах — це обрізання самим діалогом Claude Code (повний опис розгортається `ctrl+o`), а не скорочення в цьому звіті. Повний опис `leaddesk_set_lead_status` (`mcp/leaddesk-server/src/server.mjs`) містить статичний приклад формату підтвердження «змінити статус lead_0002 на contacted» — у запитах на схвалення його обрізано, і з аргументами викликів (запит 6: `lead_0003`, `lost`) він не пов'язаний; заміна прикладу на шаблон `<leadId>` — покращення сервера на майбутнє (уточнено 25.11 за рев'ю CodeRabbit).
 
 З цих запитів видно, що `SELECT` і `UPDATE` мають однаковий заголовок («Execute SQL») і однаковий опис, а що зміниться, можна прочитати лише з самого SQL. Запит на схвалення також не попереджає, що агент читає поле `message`, текст, який написав відвідувач форми.
 
