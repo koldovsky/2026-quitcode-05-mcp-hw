@@ -28,7 +28,9 @@
 Усі сім викликів (шість різних інструментів: `browser_navigate`, `browser_snapshot`, `browser_fill_form`,
 `browser_click`, `browser_console_messages`, `browser_network_requests`) відповідають точним правилам `allow`
 у `.claude/settings.json` з префіксом `mcp__playwright__` (наприклад, `mcp__playwright__browser_navigate`),
-тому за конфігом запиту на схвалення не потребували. Заборонені інструменти (`browser_run_code_unsafe`, `browser_file_upload`, `browser_drop`,
+тому за конфігом запиту на схвалення не потребували (так було під час цієї сесії; з 27.11.2026, після
+рев'ю, `browser_navigate`, `browser_click`, `browser_type` і `browser_fill_form` перенесено в `ask`, тож
+повтор цієї перевірки попросить схвалення на кожен із них). Заборонені інструменти (`browser_run_code_unsafe`, `browser_file_upload`, `browser_drop`,
 `browser_evaluate`) відсутні в контексті агента, а `browser_network_request` (одниця) агент не викликав.
 Жодного іншого URL, окрім `http://localhost:3000/`, не відкривалось; у браузері агента ніхто не
 логінився.
