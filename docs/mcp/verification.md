@@ -38,10 +38,16 @@
 
 ## Task B — що зробили агенти з серверами
 
-- **Supabase:** TODO — після створення одноразового проєкту: `project_ref` у `.mcp.json`, вхід через `/mcp`,
-  сесія лише з `supabase`; `apply_migration` з `supabase/migrations/0001_leaddesk.sql`, `execute_sql` із
-  `supabase/seed/leads.sql`, `select count(*) from public.leads` → 20; за бажанням
-  `select current_user, session_user, current_setting('is_superuser');`
+- **Supabase:** вхід через `/mcp` → Authenticate в окремій сесії, де агенту нічого не писали. Потім нова
+  сесія (Claude Code 2.1.332, Opus 5.5), у `/mcp` вимкнено `playwright`, `vercel` і три конектори claude.ai —
+  лишився `supabase` з 9 інструментами. Запит: «Застосуй міграцію з supabase/migrations/0001_leaddesk.sql
+  через apply_migration, потім виконай insert із supabase/seed/leads.sql через execute_sql і перевір
+  select count(*) from public.leads. Нічого іншого в проєкті не змінюй.» Агент спершу помітив, що
+  проєкт не порожній, і запропонував окремий проєкт; після пояснення, що це навчальний проєкт, —
+  3 виклики `supabase`: міграція, сид, `count(*)` → **20**. Файлів проєкту не змінював.
+  **Відхилення:** сесія була в auto mode, тож виклики схвалено автоматично, а не вручну.
+- Що агент зробив сам, без прохання (Supabase): перед міграцією перевірив наявні таблиці й зупинився з
+  питанням, бо проєкт не одноразовий — це правильна поведінка.
 - **Vercel:** TODO — форк підключено до Vercel через git-інтеграцію в дашборді; сесія лише з `vercel`;
   `list_deployments` → `get_deployment_build_logs` → `docs/mcp/evidence/vercel-build-log.txt`
 - **Figma:** не використовували — третім сервером обрано Playwright.
