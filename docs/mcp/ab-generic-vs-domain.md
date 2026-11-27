@@ -6,7 +6,7 @@
 - **Інструмент і версія:** Claude Code 2.1.283
 - **Модель і рівень міркування (effort), однакові в обох прогонах:** <…>
 - **Запити:** `materials/ab-prompts.md` без змін; sha256 блоку запитів: `3b4c90c48f32fd358bd696eb5aaf386e51f038794c0b8d8a57ff88675718058a` (збігається з рядком у файлі)
-- **Прогін A:** тека `../leaddesk-ab-a`; команда: `<claude mcp add --transport http supabase "https://mcp.supabase.com/mcp?project_ref=<ref>&read_only=true&features=database,docs">`
+- **Прогін A:** тека `../leaddesk-ab-a`; команда: `claude mcp add --transport http supabase "https://mcp.supabase.com/mcp?project_ref=tyxyvgilaoykzftynvtm&read_only=true&features=database,docs"`
 - **Прогін B:** тека `../leaddesk-ab-b`; команда: `claude mcp add leaddesk -- node "/Users/kateryna/Courses/2026-quitcode-05-mcp-hw/mcp/leaddesk-server/src/server.mjs"`
 - **`/mcp` на початку сесії:** A — <сервер, стан, скільки інструментів>; B — <…>
 - **Що довелось вимкнути в `/mcp`** (сервери зі скоупом `user`, конектори claude.ai): <… / нічого>
