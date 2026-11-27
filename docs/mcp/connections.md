@@ -1,0 +1,59 @@
+# Підключення MCP-серверів LeadDesk (Task B)
+
+> Позначки **TODO** — кроки, які потребують особистого входу в Supabase і Vercel; заповнюються після них.
+
+- **Акаунти** (особисті чи одноразові, без клієнтських організацій і команд): Supabase — TODO: особистий
+  акаунт, окрема організація з одним порожнім проєктом · Vercel — TODO: особистий Hobby-акаунт ·
+  Figma — не використовували
+- **Третій сервер:** Playwright — чому саме він: акаунт не потрібен і квоти викликів немає, а перевірка
+  форми заявки проти локального `npm run dev` — та задача, яку LeadDesk реально має; урок про права
+  той самий: ядро вмикає `browser_run_code_unsafe`, і закрити його можна лише deny на клієнті.
+- **Vercel CLI на цій машині:** не встановлено (`which vercel` нічого не знаходить) — шляху
+  `use_vercel_cli` → `Bash` → `vercel …` під CLI-токеном тут немає.
+
+## Сервери
+
+| Сервер | Який доступ | Навіщо нам | Що станеться при компрометації | Чим саме звужено |
+|---|---|---|---|---|
+| `supabase` | Один проєкт: читати й писати всі таблиці через `execute_sql` під роллю розробника, створювати схему `apply_migration`, читати логи, advisors, URL і publishable-ключі, шукати в документації | Міграція схеми `leads` і сид 20 лідів — база для прогону A в Task C | Хто має токен, читає й змінює всю базу одноразового проєкту (ПІБ, email, тексти заявок) і може створювати таблиці; інших проєктів і організацій через цей URL не дістати, але OAuth-токен виданий на організацію | `project_ref=` прибирає `project_id` зі схем і прив'язує до одного проєкту; `features=database,development,docs` — без `account` (9 інструментів на кшталт `list_projects`, `create_project`), без `functions` (канал назовні) і `branching` (платне); `read_only` свідомо не ставимо — потрібен `apply_migration`. `execute_sql` і `apply_migration` не в `allow`: кожен виклик схвалюємо вручну |
+| `vercel` | Увесь користувач Vercel (OAuth-скоуп `openid`): читати деплої, логи, проєкти, домени; без deny — ще й купувати, деплоїти, роздавати посилання в обхід захисту, писати в toolbar | Лог білду задеплоєного форку | Повний контроль над акаунтом Vercel: деплой, покупки з картки, читання змінних оточення через CLI | `deny` на 11 інструментів, що змінюють стан (`buy_*` ×4, `deploy_to_vercel`, `get_access_to_vercel_url`, `import-claude-design-from-url`, чотири toolbar-інструменти); `allow` — лише `list_deployments`, `get_deployment`, `get_deployment_build_logs`. CLI не встановлено. Звузити на сервері нічим |
+| `playwright` | Локальний браузер Chrome, керований агентом: відкрити сторінку, читати DOM, консоль, мережу, заповнювати форми, клікати; ядро вміє ще виконувати JS у процесі сервера й завантажувати файли | Перевірка форми заявки на `localhost` | Хто керує сервером, виконує код на машині (`browser_run_code_unsafe`), завантажує файли проєкту (`.env.local`) у будь-яку форму й відкриває будь-яку адресу з даними в URL | Точна версія `@playwright/mcp@0.0.82`; `--isolated` (профіль у пам'яті, без логінів); `--no-webmcp` (сторінка не додає інструментів); `--allowed-origins http://localhost:3000` (зручність, не межа); `deny` на `browser_run_code_unsafe`, `webmcp_*`, `browser_file_upload`, `browser_drop`, `browser_evaluate`; `allow` — 10 точних імен для перевірки форми; `browser_network_request` (заголовки й `Cookie`) — ні там, ні там |
+
+Власний `leaddesk` у `.mcp.json` не додаємо: для Task C він підключається зі скоупом `local` у порожній теці.
+
+## Supabase: схема й сид
+
+- Міграція `supabase/migrations/0001_leaddesk.sql` створює таблиці: `leads` (`check` на id
+  `^lead_\d{4}$`, на п'ять статусів `LEAD_STATUSES` і шість джерел `LEAD_SOURCES`), `lead_audit` (форма
+  `AuditEntry`); RLS увімкнено без політик — Data API для `anon` нічого не віддає
+- Сид `supabase/seed/leads.sql`: 20 рядків, `lead_0001`–`lead_0020`, ті самі, що в `materials/leads.json`
+  (згенеровано з цього файла; `cmp` фікстури сервера з `materials/leads.json` — збіг)
+- Скільки інструментів Supabase видно в `/mcp` із вашим URL: TODO
+- Якими викликами створено схему й дані і що ви схвалювали вручну: TODO — `apply_migration` з SQL
+  міграції, `execute_sql` з insert сиду, `execute_sql` `select count(*) from public.leads` → 20
+
+## Сесії: що вмикаємо разом
+
+У кожній сесії — щонайбільше один сервер із правом запису; браузерний сервер — ніколи разом із Supabase.
+
+| Крок | Увімкнено в `/mcp` | Сервер із правом запису в цій сесії |
+|---|---|---|
+| Міграція й сид | `supabase` | `supabase` |
+| Лог білду | `vercel` | —, записуючі інструменти під deny |
+| Знімки «до/після» Playwright | `playwright` (`claude -p --strict-mcp-config`, конфіг лише з `playwright`) | — (інструменти лише перелічено, жодного виклику) |
+| Перевірка форми в браузері | `playwright` (так само; Supabase, Vercel і конектори claude.ai у сесії відсутні) | `playwright` |
+| A/B, прогін A | `supabase` (профіль «client», `read_only=true`) | — |
+| A/B, прогін B | `leaddesk` | `leaddesk` |
+
+`claude -p` у корені репозиторію без `--strict-mcp-config` підняв би всі три сервери з `.mcp.json`
+разом без питань, тож для неінтерактивних прогонів ми завжди передаємо окремий конфіг з одним сервером.
+
+## До і після звуження: третій сервер
+
+- Як отримали перелік: нова сесія `claude -p --strict-mcp-config --mcp-config <лише playwright>` з кореня
+  репозиторію, вбудовані інструменти читання/мережі вимкнено; запит «Перелічи всі інструменти сервера
+  playwright, які тобі зараз доступні. Нічого не викликай.» — «до» без блоку Playwright у
+  `.claude/settings.json`, «після» — з ним
+- `docs/mcp/evidence/mcp-before.txt`: 25 інструментів
+- `docs/mcp/evidence/mcp-after.txt`: 21 інструмент; зникли: `browser_run_code_unsafe`,
+  `browser_file_upload`, `browser_drop`, `browser_evaluate` (`webmcp_*` не було й у «до» завдяки `--no-webmcp`)
