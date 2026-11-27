@@ -35,13 +35,13 @@
 
 Зауваження рев'ю 16.11: сесія Vercel і три сесії Playwright із Task B ішли з VS Code, поруч з інтеграцією `ide`
 (`executeCode`). Усі чотири повторено 27.11.2026 окремим процесом `claude -p` (неінтерактивний режим; запустив агент
-Claude Code за дорученням студента): оточення без змінних VS Code, `--strict-mcp-config --mcp-config <файл з одним
+Claude Code за дорученням студента) з теки поза VS Code: оточення без жодних змінних VS Code і батьківської сесії Claude Code, `--strict-mcp-config --mcp-config <файл з одним
 сервером>`, `ENABLE_CLAUDEAI_MCP_SERVERS=false`, `claude-sonnet-5-5`, `--effort high`. Запити — дослівно ті самі, що в
 Task B. Транскрипти з записів сесій — у `docs/mcp/evidence/rerun-2026-11-27/`.
 
 | Сесія | Сервер у сесії | `mcp__ide__*` | Результат |
 |---|---|---|---|
-| Знімок «до» (без `deny` для Playwright) — `playwright-before-deny.md` | `playwright` | 0 | 25 інструментів, викликів 0 |
+| Знімок «до» (без `deny` для Playwright) — `playwright-before-deny.md` | `playwright` | 0 | 25 інструментів у записі ініціалізації, викликів 0 (агент у відповіді написав «24» — та сама помилка лічби, що й у Task B) |
 | Знімок «після» (чинний `deny`) — `playwright-after-deny.md` | `playwright` | 0 | 21 інструмент; зникли рівно `browser_run_code_unsafe`, `browser_file_upload`, `browser_drop`, `browser_evaluate`; викликів 0 |
 | Перевірка форми, правило `ask` без людини — `playwright-form-ask-denied.md` | `playwright` | 0 | перший `browser_navigate` відхилено: у неінтерактивному режимі діалогу немає, і `ask` переважив `--allowedTools` — нове правило `ask` діє |
 | Перевірка форми — `playwright-form-check.md` | `playwright` | 0 | `navigate → snapshot → fill_form → click → snapshot → console_messages → network_requests`, відмов 0; «Дякуємо! Заявку отримано.», консоль без помилок і попереджень, один `POST http://localhost:3000/` → 200. Три виклики з `ask` схвалено наперед окремою копією налаштувань саме для цього прогону (як «Yes» людини); `browser_type` лишився в `ask`, `deny` без змін |

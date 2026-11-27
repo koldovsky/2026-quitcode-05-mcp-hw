@@ -1,10 +1,10 @@
 # Перевірка форми заявки (Playwright) без ide
 
-Повтор 27.11.2026 за рев'ю 16.11 (сесії Task B ішли з VS Code поруч з інтеграцією `ide`). Запуск: окремий процес `claude -p` (неінтерактивний режим), оточення без змінних VS Code, `--strict-mcp-config --mcp-config <файл з одним сервером>`, `ENABLE_CLAUDEAI_MCP_SERVERS=false`, `--model claude-sonnet-5-5 --effort high`. Запустив агент Claude Code за дорученням студента; запис — `--output-format stream-json`. Застосунок — `npm run dev` на `http://localhost:3000`. Схвалення: діалогу в неінтерактивному режимі немає, тож три виклики з `ask` (`browser_navigate`, `browser_fill_form`, `browser_click`) схвалено наперед окремою копією налаштувань саме для цього прогону (вони перенесені з `ask` в `allow`, `browser_type` лишився в `ask`, `deny` без змін) — так само, як людина натиснула б «Yes» на кожен. Запит дослівно той самий, що в Task B.
+Повтор 27.11.2026 за рев'ю 16.11 (сесії Task B ішли з VS Code поруч з інтеграцією `ide`). Запуск: окремий процес `claude -p` (неінтерактивний режим) з теки поза VS Code, оточення без жодних змінних VS Code і батьківської сесії Claude Code, `--strict-mcp-config --mcp-config <файл з одним сервером>`, `ENABLE_CLAUDEAI_MCP_SERVERS=false`, `--model claude-sonnet-5-5 --effort high`. Запустив агент Claude Code за дорученням студента; запис — `--output-format stream-json`. Застосунок — `npm run dev` на `http://localhost:3000`. Схвалення: діалогу в неінтерактивному режимі немає, тож три виклики з `ask` (`browser_navigate`, `browser_fill_form`, `browser_click`) схвалено наперед окремою копією налаштувань саме для цього прогону (перенесені з `ask` в `allow`; `browser_type` лишився в `ask`, `deny` без змін) — так само, як людина натиснула б «Yes» на кожен. Запит дослівно той самий, що в Task B.
 
 ## Ініціалізація сесії (з запису, дослівно)
 
-- Claude Code: `2.1.330`; модель: `claude-sonnet-5-5`; сесія: `fc380733-a669-4656-9446-208c3165e6bb`
+- Claude Code: `2.1.330`; модель: `claude-sonnet-5-5`; сесія: `f1a16abe-5b81-40c2-b02b-d67267465047`
 - MCP-сервери: `playwright` — `connected`
 - MCP-інструментів у сесії: 21; інструментів `mcp__ide__*`: 0
 
@@ -42,7 +42,7 @@ mcp__playwright__browser_wait_for
 
 ```json
 {
-  "query": "select:mcp__playwright__browser_navigate,mcp__playwright__browser_snapshot,mcp__playwright__browser_fill_form,mcp__playwright__browser_click,mcp__playwright__browser_console_messages,mcp__playwright__browser_network_requests",
+  "query": "select:mcp__playwright__browser_navigate,mcp__playwright__browser_snapshot,mcp__playwright__browser_fill_form,mcp__playwright__browser_click,mcp__playwright__browser_console_messages,mcp__playwright__browser_network_requests,mcp__playwright__browser_type",
   "max_results": 10
 }
 ```
@@ -56,6 +56,7 @@ mcp__playwright__browser_wait_for
 {"type":"tool_reference","tool_name":"mcp__playwright__browser_click"}
 {"type":"tool_reference","tool_name":"mcp__playwright__browser_console_messages"}
 {"type":"tool_reference","tool_name":"mcp__playwright__browser_network_requests"}
+{"type":"tool_reference","tool_name":"mcp__playwright__browser_type"}
 ```
 
 **Виклик:** `mcp__playwright__browser_navigate`
@@ -77,9 +78,9 @@ await page.goto('http://localhost:3000');
 - Page URL: http://localhost:3000/
 - Page Title: LeadDesk
 ### Snapshot
-- [Snapshot](.playwright-mcp\page-2026-11-27T07-54-53-557Z.yml)
+- [Snapshot](.playwright-mcp\page-2026-11-27T08-17-42-582Z.yml)
 ### Events
-- New console entries: .playwright-mcp\console-2026-11-27T07-54-52-825Z.log#L1-L2
+- New console entries: .playwright-mcp\console-2026-11-27T08-17-41-932Z.log#L1-L2
 ```
 
 **Виклик:** `mcp__playwright__browser_snapshot`
@@ -172,7 +173,7 @@ await page.goto('http://localhost:3000');
       "target": "e23",
       "name": "Прізвище",
       "type": "textbox",
-      "value": "Тестовенко"
+      "value": "Тестовий"
     },
     {
       "target": "e26",
@@ -208,7 +209,7 @@ await page.goto('http://localhost:3000');
       "target": "e37",
       "name": "Що потрібно зробити?",
       "type": "textbox",
-      "value": "Тестова заявка: потрібен лендінг і налаштування реклами."
+      "value": "Тестова заявка: потрібен кошторис на розробку сайту."
     }
   ]
 }
@@ -220,13 +221,13 @@ await page.goto('http://localhost:3000');
 ### Ran Playwright code
 ˋˋˋjs
 await page.getByRole('textbox', { name: 'Ім\'я' }).fill('Тест');
-await page.getByRole('textbox', { name: 'Прізвище' }).fill('Тестовенко');
+await page.getByRole('textbox', { name: 'Прізвище' }).fill('Тестовий');
 await page.getByRole('textbox', { name: 'Email' }).fill('test@example.com');
 await page.getByRole('textbox', { name: 'Телефон' }).fill('+380501234567');
 await page.getByRole('textbox', { name: 'Компанія' }).fill('Test Company');
 await page.getByRole('textbox', { name: 'Сайт' }).fill('https://example.com');
 await page.getByLabel('БюджетЩе не визначилисьдо $').selectOption('$500–1500 / міс.');
-await page.getByRole('textbox', { name: 'Що потрібно зробити?' }).fill('Тестова заявка: потрібен лендінг і налаштування реклами.');
+await page.getByRole('textbox', { name: 'Що потрібно зробити?' }).fill('Тестова заявка: потрібен кошторис на розробку сайту.');
 ˋˋˋ
 ```
 
@@ -235,7 +236,24 @@ await page.getByRole('textbox', { name: 'Що потрібно зробити?' 
 ```json
 {
   "target": "e40",
-  "element": "Надіслати заявку"
+  "element": "Надіслати заявку button"
+}
+```
+
+**Виклик:** `mcp__playwright__browser_console_messages`
+
+```json
+{
+  "level": "debug",
+  "all": true
+}
+```
+
+**Виклик:** `mcp__playwright__browser_network_requests`
+
+```json
+{
+  "static": false
 }
 ```
 
@@ -250,12 +268,31 @@ await page.getByRole('button', { name: 'Надіслати заявку' }).clic
 - Page URL: http://localhost:3000/
 - Page Title: LeadDesk
 ### Snapshot
-- [Snapshot](.playwright-mcp\page-2026-11-27T07-55-00-328Z.yml)
+- [Snapshot](.playwright-mcp\page-2026-11-27T08-17-49-330Z.yml)
+```
+
+**Результат:**
+
+```text
+### Result
+22. [POST] http://localhost:3000/ => [200] OK
+
+Note: 22 static requests not shown, run with "static" option to see them.
+```
+
+**Результат:**
+
+```text
+### Result
+Total messages: 2 (Errors: 0, Warnings: 0)
+
+[INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1e8vcs8._.js:776
+[LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1e8vcs8._.js:776
 ```
 
 **Агент:**
 
-Форму відправлено, зараз перевіряю результат на сторінці, консоль і мережу.
+Форму відправлено; зараз дивлюся, що показала сторінка після відправки.
 
 **Виклик:** `mcp__playwright__browser_snapshot`
 
@@ -297,53 +334,27 @@ await page.getByRole('button', { name: 'Надіслати заявку' }).clic
 ˋˋˋ
 ```
 
-**Виклик:** `mcp__playwright__browser_console_messages`
-
-```json
-{
-  "level": "debug",
-  "all": true
-}
-```
-
-**Результат:**
-
-```text
-### Result
-Total messages: 2 (Errors: 0, Warnings: 0)
-
-[INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1e8vcs8._.js:776
-[LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1e8vcs8._.js:776
-```
-
-**Виклик:** `mcp__playwright__browser_network_requests`
-
-```json
-{
-  "static": false
-}
-```
-
-**Результат:**
-
-```text
-### Result
-22. [POST] http://localhost:3000/ => [200] OK
-
-Note: 22 static requests not shown, run with "static" option to see them.
-```
-
 **Агент:**
 
-Форму заявки на `http://localhost:3000` відправлено, і сторінка показала «Дякуємо! Заявку отримано.» Жодної іншої адреси я не відкривав.
+Заявку відправлено, і вона пройшла без помилок. Я працював тільки на `http://localhost:3000`, інших адрес не відкривав.
 
-- **Дані:** ім'я Тест, прізвище Тестовенко, `test@example.com`, `+380501234567`, компанія Test Company, сайт `https://example.com`, бюджет «$500–1500 / міс.» і короткий опис завдання. Чекбокс розсилки я не чіпав.
-- **Консоль:** помилок і попереджень немає. Є два інформаційні повідомлення: підказка про React DevTools і «[HMR] connected».
-- **Мережа:** після відправки пішов один `POST http://localhost:3000/` зі статусом 200. Схоже на Next.js server action. Окремого API-запиту немає. Ще 22 статичні запити (скрипти, стилі) успішні, я їх не розглядав.
+- **Форма:** заповнив усі поля тестовими даними:
+  - ім'я «Тест Тестовий»;
+  - `test@example.com`;
+  - `+380501234567`;
+  - компанія «Test Company»;
+  - сайт `https://example.com`;
+  - бюджет «$500–1500 / міс.»;
+  - короткий опис задачі.
+  
+  Чекбокс розсилки не чіпав.
+- **Результат:** після натискання «Надіслати заявку» форма змінилася на повідомлення «Дякуємо! Заявку отримано. Ми зв'яжемося з вами протягом робочого дня.»
+- **Консоль:** помилок і попереджень немає. Є два інформаційні повідомлення: підказка про React DevTools і `[HMR] connected`.
+- **Мережа:** єдиний нестатичний запит — `POST http://localhost:3000/` зі статусом 200 OK. Статичних запитів було 22, їх я не розглядав.
 
-Я не дивився тіло запиту й відповіді. Тому не знаю, чи заявка справді збереглась на сервері, а не лише показала повідомлення про успіх. Можу відкрити деталі цього POST, якщо потрібно.
+Тіло POST-запиту та відповідь сервера окремо не перевіряв. Сторінка `/quotes/new` з навігації теж не відкривалась.
 
 ## Підсумок прогону (з запису)
 
-- Ходів: 9; тривалість: 17 с; вартість за записом: $0.093
+- Ходів: 9; тривалість: 16 с; вартість за записом: $0.095
 - Відмов у дозволах: 0
