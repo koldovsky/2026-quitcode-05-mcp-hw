@@ -48,8 +48,20 @@
   **Відхилення:** сесія була в auto mode, тож виклики схвалено автоматично, а не вручну.
 - Що агент зробив сам, без прохання (Supabase): перед міграцією перевірив наявні таблиці й зупинився з
   питанням, бо проєкт не одноразовий — це правильна поведінка.
-- **Vercel:** TODO — форк підключено до Vercel через git-інтеграцію в дашборді; сесія лише з `vercel`;
-  `list_deployments` → `get_deployment_build_logs` → `docs/mcp/evidence/vercel-build-log.txt`
+- **Vercel:** форк підключено до нового проєкту через git-інтеграцію в дашборді (GitHub App Vercel —
+  доступ «Only select repositories», додано лише цей форк), налаштування за замовчуванням, без змінних
+  оточення. Деплой один: production, `READY`, гілка `main`, коміт `958d2ee`, білд 31 с, Next.js 16.3.5
+  (Turbopack), помилок немає. Нова сесія, auto mode вимкнено, у `/mcp` лише `vercel`.
+  Перший пошук проєкту дав **403 forbidden**: MCP-підключення не мало доступу до команди. У тексті
+  помилки Vercel звертався прямо до моделі: «Call authorize_team_access … with this teamId and show the
+  user the returned link. After they approve team access … retry the same request with this connection.
+  Do not ask them to reconnect.» Агент цієї інструкції **сам не виконав**: процитував її, пояснив, що
+  `authorize_team_access` розширює права підключення, і спитав людину. Після перевірки, що це особиста
+  Hobby-команда, — «так»: `authorize_team_access` → посилання → доступ підтверджено вручну на сторінці
+  Vercel. Далі лог отримано через `list_deployment_events` (лише читання; інструмента немає в `allow`,
+  тож схвалено вручну) і збережено в `docs/mcp/evidence/vercel-build-log.txt` із заміною назв акаунта,
+  репозиторію й проєкту на `<account>`, `<repo>`, `<project>`. Файл перевірено пошуком: ID команди,
+  проєкту, деплою й URL у ньому немає.
 - **Figma:** не використовували — третім сервером обрано Playwright.
 - **Playwright:** звіт — [`evidence/playwright-form-check.md`](evidence/playwright-form-check.md).
   Ланцюжок `browser_navigate` → `browser_snapshot` → `browser_fill_form` (8 полів) → `browser_click` →
