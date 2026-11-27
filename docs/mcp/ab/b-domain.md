@@ -169,41 +169,394 @@
 > Скільки лідів зараз у статусі qualified? Назви їхні ідентифікатори й компанії.
 
 - `mcp__leaddesk__leaddesk_find_leads` `{"status":"qualified","limit":50}`
-  - результат: {"status":"qualified","total":3,"returned":3,"leads":[{"id":"lead_0001","company":"North Wind Yachts","status":"qualified","source":"facebook-ads","budget":2500,"createdAt":"2026-09-20T06:32:40.447Z"},{"id":"lead_0013","company":"Bloom Florists","status":"qualified","source":"facebook-ads","budget":1500,"createdAt":"2026-09-07T13:54:42.854Z"},{"id":"lead_0015","company":"Bloom Florists","status":"qualified","source":"website","budget":2500,"createdAt":"2026-08-18T15:29:38.903Z"}]}
+  - результат:
+  ```text
+  {
+    "status": "qualified",
+    "total": 3,
+    "returned": 3,
+    "leads": [
+      {
+        "id": "lead_0001",
+        "company": "North Wind Yachts",
+        "status": "qualified",
+        "source": "facebook-ads",
+        "budget": 2500,
+        "createdAt": "2026-09-20T06:32:40.447Z"
+      },
+      {
+        "id": "lead_0013",
+        "company": "Bloom Florists",
+        "status": "qualified",
+        "source": "facebook-ads",
+        "budget": 1500,
+        "createdAt": "2026-09-07T13:54:42.854Z"
+      },
+      {
+        "id": "lead_0015",
+        "company": "Bloom Florists",
+        "status": "qualified",
+        "source": "website",
+        "budget": 2500,
+        "createdAt": "2026-08-18T15:29:38.903Z"
+      }
+    ]
+  }
+  ```
 
 ### Запит 2
 
 > Покажи п'ять найновіших лідів зі статусом new: ідентифікатор, компанія, дата заявки.
 
 - `mcp__leaddesk__leaddesk_find_leads` `{"status":"new","limit":5}`
-  - результат: {"status":"new","total":6,"returned":5,"leads":[{"id":"lead_0002","company":"Rynok Books","status":"new","source":"webinar","budget":500,"createdAt":"2026-09-13T00:52:02.043Z"},{"id":"lead_0005","company":"Brick & Beam","status":"new","source":"linkedin","budget":500,"createdAt":"2026-09-12T02:42:39.732Z"},{"id":"lead_0004","company":"Green Leaf Market","status":"new","source":"facebook-ads","budget":1500,"createdAt":"2026-08-30T17:46:42.505Z"},{"id":"lead_0018","company":"Green Leaf Market","status":"new","source":"google-ads","budget":null,"createdAt":"2026-07-18T05:08:24.837Z"},{"id":"lead_0012","company":"Lviv Coffee Lab","status":"new","source":"website","budget":null,"createdAt":"2026-
+  - результат:
+  ```text
+  {
+    "status": "new",
+    "total": 6,
+    "returned": 5,
+    "leads": [
+      {
+        "id": "lead_0002",
+        "company": "Rynok Books",
+        "status": "new",
+        "source": "webinar",
+        "budget": 500,
+        "createdAt": "2026-09-13T00:52:02.043Z"
+      },
+      {
+        "id": "lead_0005",
+        "company": "Brick & Beam",
+        "status": "new",
+        "source": "linkedin",
+        "budget": 500,
+        "createdAt": "2026-09-12T02:42:39.732Z"
+      },
+      {
+        "id": "lead_0004",
+        "company": "Green Leaf Market",
+        "status": "new",
+        "source": "facebook-ads",
+        "budget": 1500,
+        "createdAt": "2026-08-30T17:46:42.505Z"
+      },
+      {
+        "id": "lead_0018",
+        "company": "Green Leaf Market",
+        "status": "new",
+        "source": "google-ads",
+        "budget": null,
+        "createdAt": "2026-07-18T05:08:24.837Z"
+      },
+      {
+        "id": "lead_0012",
+        "company": "Lviv Coffee Lab",
+        "status": "new",
+        "source": "website",
+        "budget": null,
+        "createdAt": "2026-07-07T20:23:53.712Z"
+      }
+    ]
+  }
+  ```
 
 ### Запит 3
 
 > Який сумарний бюджет лідів у статусі won? Ліди без бюджету в суму не додавай, але скажи, скільки їх.
 
 - `mcp__leaddesk__leaddesk_find_leads` `{"status":"won","limit":50}`
-  - результат: {"status":"won","total":5,"returned":5,"leads":[{"id":"lead_0011","company":"Lviv Coffee Lab","status":"won","source":"facebook-ads","budget":5000,"createdAt":"2026-09-11T12:34:50.420Z"},{"id":"lead_0006","company":"Nova Dental","status":"won","source":"linkedin","budget":null,"createdAt":"2026-08-31T21:08:50.351Z"},{"id":"lead_0016","company":"Karpaty Tours","status":"won","source":"google-ads","budget":1000,"createdAt":"2026-07-30T05:49:44.585Z"},{"id":"lead_0010","company":"Artisan Bakery","status":"won","source":"linkedin","budget":2500,"createdAt":"2026-07-20T15:04:37.639Z"},{"id":"lead_0017","company":"Hutsul Crafts","status":"won","source":"webinar","budget":500,"createdAt":"2026-06-2
+  - результат:
+  ```text
+  {
+    "status": "won",
+    "total": 5,
+    "returned": 5,
+    "leads": [
+      {
+        "id": "lead_0011",
+        "company": "Lviv Coffee Lab",
+        "status": "won",
+        "source": "facebook-ads",
+        "budget": 5000,
+        "createdAt": "2026-09-11T12:34:50.420Z"
+      },
+      {
+        "id": "lead_0006",
+        "company": "Nova Dental",
+        "status": "won",
+        "source": "linkedin",
+        "budget": null,
+        "createdAt": "2026-08-31T21:08:50.351Z"
+      },
+      {
+        "id": "lead_0016",
+        "company": "Karpaty Tours",
+        "status": "won",
+        "source": "google-ads",
+        "budget": 1000,
+        "createdAt": "2026-07-30T05:49:44.585Z"
+      },
+      {
+        "id": "lead_0010",
+        "company": "Artisan Bakery",
+        "status": "won",
+        "source": "linkedin",
+        "budget": 2500,
+        "createdAt": "2026-07-20T15:04:37.639Z"
+      },
+      {
+        "id": "lead_0017",
+        "company": "Hutsul Crafts",
+        "status": "won",
+        "source": "webinar",
+        "budget": 500,
+        "createdAt": "2026-06-27T08:23:09.596Z"
+      }
+    ]
+  }
+  ```
 
 ### Запит 4
 
 > Які статуси лідів є в LeadDesk і що кожен із них означає для команди?
 
 - `ReadMcpResourceTool` `{"server":"leaddesk","uri":"leaddesk://reference/statuses"}`
-  - результат: {"contents":[{"uri":"leaddesk://reference/statuses","mimeType":"text/markdown","text":"# Статуси лідів LeadDesk\n\nП'ять статусів — рівно `LEAD_STATUSES` застосунку. Статус змінює лише людина з команди Studio Nova\nабо агент із її підтвердження; кожна зміна лишає запис в аудиті.\n\n| Статус | Що означає для команди | Коли переводимо сюди |\n|---|---|---|\n| `new` | Заявка з форми чи каналу, з клієнтом ще ніхто не говорив | Автоматично, коли заявка надходить |\n| `contacted` | Менеджер зв'язався з клієнтом (дзвінок, лист, месенджер), розмову почато | Після першого реального контакту, не після автолиста |\n| `qualified` | Є задача, бюджет і людина, що ухвалює рішення; готуємо кошторис | Коли н
+  - результат:
+  ```text
+  {
+    "contents": [
+      {
+        "uri": "leaddesk://reference/statuses",
+        "mimeType": "text/markdown",
+        "text": "# Статуси лідів LeadDesk\n\nП'ять статусів — рівно `LEAD_STATUSES` застосунку. Статус змінює лише людина з команди Studio Nova\nабо агент із її підтвердження; кожна зміна лишає запис в аудиті.\n\n| Статус | Що означає для команди | Коли переводимо сюди |\n|---|---|---|\n| `new` | Заявка з форми чи каналу, з клієнтом ще ніхто не говорив | Автоматично, коли заявка надходить |\n| `contacted` | Менеджер зв'язався з клієнтом (дзвінок, лист, месенджер), розмову почато | Після першого реального контакту, не після автолиста |\n| `qualified` | Є задача, бюджет і людина, що ухвалює рішення; готуємо кошторис | Коли на дзвінку підтверджено потребу, бюджет і терміни |\n| `won` | Клієнт погодив кошторис і підписав договір або сплатив аванс | Лише акаунт-менеджер, після підпису чи оплати |\n| `lost` | Угоди не буде: відмова, інша агенція, немає бюджету, не виходить на зв'язок | З причиною в полі `reason`, щоб команда бачила, чому втратили |\n\nЗвичайний шлях: `new` → `contacted` → `qualified` → `won`. З будь-якого статусу лід може стати `lost`.\n"
+      }
+    ]
+  }
+  ```
 
 ### Запит 5
 
 > Ми вже зателефонували в Rynok Books щодо заявки lead_0002. Переведи цей лід у статус contacted.
 
 - `mcp__leaddesk__leaddesk_set_lead_status` `{"leadId":"lead_0002","status":"contacted","reason":"Команда зателефонувала в Rynok Books щодо заявки, розмову почато"}`
-  - результат: {"lead":{"id":"lead_0002","company":"Rynok Books","status":"contacted","source":"webinar","budget":500,"createdAt":"2026-09-13T00:52:02.043Z"},"audit":{"action":"lead.status_changed","leadId":"lead_0002","at":"2026-11-27T22:47:57.529Z","from":"new","to":"contacted","reason":"Команда зателефонувала в Rynok Books щодо заявки, розмову почато","actor":"mcp:leaddesk"}}
+  - результат:
+  ```text
+  {
+    "lead": {
+      "id": "lead_0002",
+      "company": "Rynok Books",
+      "status": "contacted",
+      "source": "webinar",
+      "budget": 500,
+      "createdAt": "2026-09-13T00:52:02.043Z"
+    },
+    "audit": {
+      "action": "lead.status_changed",
+      "leadId": "lead_0002",
+      "at": "2026-11-27T22:47:57.529Z",
+      "from": "new",
+      "to": "contacted",
+      "reason": "Команда зателефонувала в Rynok Books щодо заявки, розмову почато",
+      "actor": "mcp:leaddesk"
+    }
+  }
+  ```
 
 ### Запит 6
 
 > Лід lead_0003 (Metro Logistics) відмовився: обрали іншу агенцію. Познач його як lost і вкажи причину.
 
 - `mcp__leaddesk__leaddesk_find_leads` `{"status":"any","limit":50}`
-  - результат: {"status":"any","total":20,"returned":20,"leads":[{"id":"lead_0001","company":"North Wind Yachts","status":"qualified","source":"facebook-ads","budget":2500,"createdAt":"2026-09-20T06:32:40.447Z"},{"id":"lead_0002","company":"Rynok Books","status":"contacted","source":"webinar","budget":500,"createdAt":"2026-09-13T00:52:02.043Z"},{"id":"lead_0005","company":"Brick & Beam","status":"new","source":"linkedin","budget":500,"createdAt":"2026-09-12T02:42:39.732Z"},{"id":"lead_0011","company":"Lviv Coffee Lab","status":"won","source":"facebook-ads","budget":5000,"createdAt":"2026-09-11T12:34:50.420Z"},{"id":"lead_0008","company":"Brick & Beam","status":"contacted","source":"website","budget":1500,"
+  - результат:
+  ```text
+  {
+    "status": "any",
+    "total": 20,
+    "returned": 20,
+    "leads": [
+      {
+        "id": "lead_0001",
+        "company": "North Wind Yachts",
+        "status": "qualified",
+        "source": "facebook-ads",
+        "budget": 2500,
+        "createdAt": "2026-09-20T06:32:40.447Z"
+      },
+      {
+        "id": "lead_0002",
+        "company": "Rynok Books",
+        "status": "contacted",
+        "source": "webinar",
+        "budget": 500,
+        "createdAt": "2026-09-13T00:52:02.043Z"
+      },
+      {
+        "id": "lead_0005",
+        "company": "Brick & Beam",
+        "status": "new",
+        "source": "linkedin",
+        "budget": 500,
+        "createdAt": "2026-09-12T02:42:39.732Z"
+      },
+      {
+        "id": "lead_0011",
+        "company": "Lviv Coffee Lab",
+        "status": "won",
+        "source": "facebook-ads",
+        "budget": 5000,
+        "createdAt": "2026-09-11T12:34:50.420Z"
+      },
+      {
+        "id": "lead_0008",
+        "company": "Brick & Beam",
+        "status": "contacted",
+        "source": "website",
+        "budget": 1500,
+        "createdAt": "2026-09-10T21:30:58.988Z"
+      },
+      {
+        "id": "lead_0013",
+        "company": "Bloom Florists",
+        "status": "qualified",
+        "source": "facebook-ads",
+        "budget": 1500,
+        "createdAt": "2026-09-07T13:54:42.854Z"
+      },
+      {
+        "id": "lead_0006",
+        "company": "Nova Dental",
+        "status": "won",
+        "source": "linkedin",
+        "budget": null,
+        "createdAt": "2026-08-31T21:08:50.351Z"
+      },
+      {
+        "id": "lead_0004",
+        "company": "Green Leaf Market",
+        "status": "new",
+        "source": "facebook-ads",
+        "budget": 1500,
+        "createdAt": "2026-08-30T17:46:42.505Z"
+      },
+      {
+        "id": "lead_0015",
+        "company": "Bloom Florists",
+        "status": "qualified",
+        "source": "website",
+        "budget": 2500,
+        "createdAt": "2026-08-18T15:29:38.903Z"
+      },
+      {
+        "id": "lead_0016",
+        "company": "Karpaty Tours",
+        "status": "won",
+        "source": "google-ads",
+        "budget": 1000,
+        "createdAt": "2026-07-30T05:49:44.585Z"
+      },
+      {
+        "id": "lead_0014",
+        "company": "Nova Dental",
+        "status": "contacted",
+        "source": "facebook-ads",
+        "budget": 2500,
+        "createdAt": "2026-07-27T20:15:23.380Z"
+      },
+      {
+        "id": "lead_0007",
+        "company": "Rynok Books",
+        "status": "lost",
+        "source": "referral",
+        "budget": 5000,
+        "createdAt": "2026-07-26T23:16:04.124Z"
+      },
+      {
+        "id": "lead_0020",
+        "company": "UrbanFit Studio",
+        "status": "lost",
+        "source": "referral",
+        "budget": 2500,
+        "createdAt": "2026-07-24T12:31:19.113Z"
+      },
+      {
+        "id": "lead_0010",
+        "company": "Artisan Bakery",
+        "status": "won",
+        "source": "linkedin",
+        "budget": 2500,
+        "createdAt": "2026-07-20T15:04:37.639Z"
+      },
+      {
+        "id": "lead_0018",
+        "company": "Green Leaf Market",
+        "status": "new",
+        "source": "google-ads",
+        "budget": null,
+        "createdAt": "2026-07-18T05:08:24.837Z"
+      },
+      {
+        "id": "lead_0003",
+        "company": "Metro Logistics",
+        "status": "contacted",
+        "source": "facebook-ads",
+        "budget": 10000,
+        "createdAt": "2026-07-18T00:14:44.381Z"
+      },
+      {
+        "id": "lead_0012",
+        "company": "Lviv Coffee Lab",
+        "status": "new",
+        "source": "website",
+        "budget": null,
+        "createdAt": "2026-07-07T20:23:53.712Z"
+      },
+      {
+        "id": "lead_0019",
+        "company": "Svitlo Solar",
+        "status": "new",
+        "source": "website",
+        "budget": 500,
+        "createdAt": "2026-06-30T21:07:00.656Z"
+      },
+      {
+        "id": "lead_0009",
+        "company": "North Wind Yachts",
+        "status": "contacted",
+        "source": "webinar",
+        "budget": 2500,
+        "createdAt": "2026-06-27T14:53:21.060Z"
+      },
+      {
+        "id": "lead_0017",
+        "company": "Hutsul Crafts",
+        "status": "won",
+        "source": "webinar",
+        "budget": 500,
+        "createdAt": "2026-06-27T08:23:09.596Z"
+      }
+    ]
+  }
+  ```
 - `mcp__leaddesk__leaddesk_set_lead_status` `{"leadId":"lead_0003","status":"lost","reason":"Клієнт відмовився: обрали іншу агенцію"}`
-  - результат: {"lead":{"id":"lead_0003","company":"Metro Logistics","status":"lost","source":"facebook-ads","budget":10000,"createdAt":"2026-07-18T00:14:44.381Z"},"audit":{"action":"lead.status_changed","leadId":"lead_0003","at":"2026-11-27T22:48:14.169Z","from":"contacted","to":"lost","reason":"Клієнт відмовився: обрали іншу агенцію","actor":"mcp:leaddesk"}}
+  - результат:
+  ```text
+  {
+    "lead": {
+      "id": "lead_0003",
+      "company": "Metro Logistics",
+      "status": "lost",
+      "source": "facebook-ads",
+      "budget": 10000,
+      "createdAt": "2026-07-18T00:14:44.381Z"
+    },
+    "audit": {
+      "action": "lead.status_changed",
+      "leadId": "lead_0003",
+      "at": "2026-11-27T22:48:14.169Z",
+      "from": "contacted",
+      "to": "lost",
+      "reason": "Клієнт відмовився: обрали іншу агенцію",
+      "actor": "mcp:leaddesk"
+    }
+  }
+  ```

@@ -54,6 +54,7 @@ claude mcp add leaddesk -- node "/повний/шлях/до/репозитор�
 ## HTTP-варіант (Task E1)
 
 ```bash
+cd mcp/leaddesk-server
 node src/http.mjs            # http://127.0.0.1:3333/mcp, лише 127.0.0.1
 ```
 
